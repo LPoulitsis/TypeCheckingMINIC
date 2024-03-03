@@ -1,6 +1,5 @@
 #include "Composite.h"
 
-// initialize static variables
 CSTNode* g_root = NULL;
 int CSTNode::ms_serialCounter = 0;
 bool CSTNode::m_breakVisit = false;
@@ -41,8 +40,8 @@ CSTNode::~CSTNode() {
 
 NodeType CSTNode::GetNodeType() {
 	return m_nodeType;
-
 }
+
 string CSTNode::GetGraphVizLabel() {
 	return m_graphvizLabel + "_" + to_string(m_serial);
 }

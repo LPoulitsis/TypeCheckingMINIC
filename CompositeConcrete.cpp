@@ -605,40 +605,39 @@ ValueStruct CWhileStatement::Evaluate(CSTNode* parent) {
 }
 
 ValueStruct CIfStatement::Evaluate(CSTNode* parent) {
-	ValueStruct empty;
+	ValueStruct empty{0,0,false};
 	ValueStruct child1Eval = GetChild(0)->Evaluate(this);
 	ValueStruct child2Eval = GetChild(1)->Evaluate(this);
 
 	switch (m_children->size()) {
 		case 2:
 			if (child1Eval.int_value) {
-				if (child1Eval.isInt) {
+				//if (child1Eval.isInt) {
 					GetChild(1)->Evaluate(this).int_value;
-				}
-				else {
-					GetChild(1)->Evaluate(this).float_value;
-				}
+				//}
+				//else {
+					//GetChild(1)->Evaluate(this).float_value;
+				//}
 			}
 			break;
 		case 3:
 			if (child1Eval.int_value) {
-				if (child1Eval.isInt) {
+				//if (child1Eval.isInt) {
 					GetChild(1)->Evaluate(this).int_value;
-				}
-				else {
-					GetChild(1)->Evaluate(this).float_value;
-				}
+				//}
+				//else {
+					//GetChild(1)->Evaluate(this).float_value;
+				//}
 			}
-			else {
-				if (child2Eval.isInt) {
+			else if(child2Eval.int_value) {
+				//if (child2Eval.isInt) {
 					GetChild(2)->Evaluate(this).int_value;
-				}
-				else {
-					GetChild(2)->Evaluate(this).float_value;
-				}
+				//}
+				//else {
+					//GetChild(2)->Evaluate(this).float_value;
+				//}
 			}
 			break;
-		default:;
 	}
 	return empty;
 }
