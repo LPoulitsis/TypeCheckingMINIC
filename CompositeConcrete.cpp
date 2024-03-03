@@ -716,7 +716,7 @@ ValueStruct CExpressionFCall::Evaluate(CSTNode* parent) {
 
 	if (!functionId->m_text.compare("sqrt")) {
 		aArg0 = GetActualArgument(0);
-		if (aArg.isInt) {
+		if (aArg0.isInt) {
 			result.float_value = sqrt(GetActualArgument(0).int_value);
 		}
 		else {
