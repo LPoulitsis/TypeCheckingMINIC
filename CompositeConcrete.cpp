@@ -111,11 +111,11 @@ void CStatementList::PrintSyntaxTree(ofstream* dotfile, CSTNode* parent) {
 	CSTNode::PrintSyntaxTree(dotfile, this);
 }
 void CExpressionNUMBER::PrintSyntaxTree(ofstream* dotfile, CSTNode* parent) {
-	(*dotfile) << "\"" << parent->GetGraphVizLabel() << "\"->\"" << GetGraphVizLabel() << "\";\n";
+	(*dotfile) << "\"" << parent->GetGraphVizLabel() << "\"->\"" << GetGraphVizLabel() << "_" << m_text << "\";\n";
 	CSTNode::PrintSyntaxTree(dotfile, this);
 }
 void CExpressionVariable::PrintSyntaxTree(ofstream* dotfile, CSTNode* parent) {
-	(*dotfile) << "\"" << parent->GetGraphVizLabel() << "\"->\"" << GetGraphVizLabel() << "\";\n";
+	(*dotfile) << "\"" << parent->GetGraphVizLabel() << "\"->\"" << GetGraphVizLabel() << "_" << m_text<< "\";\n";
 	CSTNode::PrintSyntaxTree(dotfile, this);
 }
 void CExpressionFCall::PrintSyntaxTree(ofstream* dotfile, CSTNode* parent) {
@@ -187,7 +187,7 @@ void CExpressionNEQUAL::PrintSyntaxTree(ofstream* dotfile, CSTNode* parent) {
 	CSTNode::PrintSyntaxTree(dotfile, this);
 }
 void CIDENTIFIER::PrintSyntaxTree(ofstream* dotfile, CSTNode* parent) {
-	(*dotfile) << "\"" << parent->GetGraphVizLabel() << "\"->\"" << GetGraphVizLabel() << "\";\n";
+	(*dotfile) << "\"" << parent->GetGraphVizLabel() << "\"->\"" << GetGraphVizLabel() <<"_" << m_text << "\";\n";
 	CSTNode::PrintSyntaxTree(dotfile, this);
 }
 
@@ -195,6 +195,8 @@ Type* CExpressionNUMBER::GetTypeOfNumber(TypeEnum type) {
 	switch (type) {
 		case INTEGER: return new Integer(INTEGER, sizeof(int));
 		case FLOAT: return new Float(FLOAT, sizeof(float));
+		default:
+			return NULL;
 	}
 }
 
@@ -245,7 +247,7 @@ ValueStruct CExpressionAssign::Evaluate(CSTNode* parent) {
 		cout << id->m_text << "=" << id->m_value.float_value << endl;
 	}
 	return id->m_value;*/
-	CExpressionVariable* id = (CExpressionVariable*)GetChild(0);
+	CIDENTIFIER* id = (CIDENTIFIER*)GetChild(0);
 	Symbol* s = g_symbolTable.GetSymbol(id->m_text); // problem with memory
 	s->value = GetChild(1)->Evaluate(this);
 	if (s->value.isInt) {

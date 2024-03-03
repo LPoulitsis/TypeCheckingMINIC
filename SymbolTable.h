@@ -14,6 +14,8 @@ public:
 	ValueStruct value;
 	CIDENTIFIER* Idnode;
 	CSTNode* syntaxNode;
+	string GetText() { return m_text; }
+	void SetSyntaxNode(CSTNode* st) { syntaxNode = st; }
 };
 
 class SymbolTable {
@@ -23,7 +25,6 @@ public:
 		m_symbolTable = new map<string, Symbol*>();
 	}
 	virtual ~SymbolTable() {}
-
 	Symbol* GetSymbol(string);
 };
 

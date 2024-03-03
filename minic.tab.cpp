@@ -591,7 +591,7 @@ yylloc.begin.filename = yylloc.end.filename = new std::string("test.txt");
 /* Line 670 of lalr1.cc  */
 #line 74 "minic.y"
     { (yyval.node) = new CExpressionVariable((yysemantic_stack_[(1) - (1)].node));
-											  g_symbolTable.GetSymbol(((CIDENTIFIER *)(yysemantic_stack_[(1) - (1)].node))->m_text)->syntaxNode =(yyval.node);
+											  g_symbolTable.GetSymbol(((CIDENTIFIER *)(yysemantic_stack_[(1) - (1)].node))->GetText())->SetSyntaxNode((yyval.node));
 											}
     break;
 

@@ -9,7 +9,7 @@ Symbol* SymbolTable::GetSymbol(string textKey) {
 	if (it == m_symbolTable->end()) {
 		symbol = new Symbol{ textKey, empty, new CIDENTIFIER(textKey.c_str()) };
 		(*m_symbolTable)[textKey] = symbol;
-		return  symbol;
+		return symbol;
 	}
 	else {
 		return (*m_symbolTable)[textKey];

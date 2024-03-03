@@ -72,7 +72,7 @@ statement_list : statement					{ $$ = new CStatementList($1) ;}
 
 expression: NUMBER							{ $$ = $1; }
 		  | IDENTIFIER						{ $$ = new CExpressionVariable($1);
-											  g_symbolTable.GetSymbol(((CIDENTIFIER *)$1)->m_text)->syntaxNode =$$;
+											  g_symbolTable.GetSymbol(((CIDENTIFIER *)$1)->GetText())->SetSyntaxNode($$);
 											}
 		  | IDENTIFIER '(' ')'				{ $$ = new CExpressionFCall($1); }
 		  | IDENTIFIER '(' args ')'			{ $$ = new CExpressionFCall($1,$3); }

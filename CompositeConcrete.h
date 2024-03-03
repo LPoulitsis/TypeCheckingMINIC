@@ -150,6 +150,7 @@ public:
 	virtual ~CIDENTIFIER();
 	virtual void PrintSyntaxTree(ofstream* dotfile, CSTNode* parent) override;
 	ValueStruct Evaluate(CSTNode* parent) override;
+	string GetText() { return m_text; }
 };
 
 class CExpressionFCall : public CExpression {

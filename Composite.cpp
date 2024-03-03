@@ -69,7 +69,7 @@ ValueStruct CSTNode::Evaluate(CSTNode* parent) {
 	list<CSTNode*>::iterator it;
 	ValueStruct result;
 	for (it = m_children->begin(); it != m_children->end(); it++) {
-		result = AggregateResult((*it)->Evaluate(parent));
+		result = (*it)->Evaluate(this);
 		if (m_breakVisit) {
 			break;
 		}
