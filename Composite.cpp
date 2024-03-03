@@ -48,7 +48,7 @@ string CSTNode::GetGraphVizLabel() {
 }
 
 CSTNode* CSTNode::GetChild(int index) {
-	list<CSTNode*>::iterator it = m_children->begin();
+	auto it = m_children->begin();
 	advance(it, index);
 	return (*it);
 }

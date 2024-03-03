@@ -238,17 +238,8 @@ ValueStruct CIDENTIFIER::Evaluate(CSTNode* parent) {
 }
 
 ValueStruct CExpressionAssign::Evaluate(CSTNode* parent) {
-	/*CExpressionIDENTIFIER* id = (CExpressionIDENTIFIER*)GetChild(0);
-	id->m_value = GetChild(1)->Evaluate(this);
-	if (id->m_value.isInt) {
-		cout << id->m_text << "=" << id->m_value.int_value << endl;
-	}
-	else {
-		cout << id->m_text << "=" << id->m_value.float_value << endl;
-	}
-	return id->m_value;*/
 	CIDENTIFIER* id = (CIDENTIFIER*)GetChild(0);
-	Symbol* s = g_symbolTable.GetSymbol(id->m_text); // problem with memory
+	Symbol* s = g_symbolTable.GetSymbol(id->m_text);
 	s->value = GetChild(1)->Evaluate(this);
 	if (s->value.isInt) {
 		cout << s->m_text << "=" << s->value.int_value << endl;
@@ -599,7 +590,6 @@ ValueStruct CWhileStatement::Evaluate(CSTNode* parent) {
 	c0_outcome = GetChild(0)->Evaluate(this);
 	c1_outcome = GetChild(1)->Evaluate(this);
 	while (GetChild(0)->Evaluate(this).int_value) {
-		cout << "before break visit\n";
 		if (c0_outcome.isInt) {
 			GetChild(1)->Evaluate(this).int_value;
 		}
@@ -607,7 +597,6 @@ ValueStruct CWhileStatement::Evaluate(CSTNode* parent) {
 			GetChild(1)->Evaluate(this).float_value;
 		}
 		if (m_breakVisit) {
-			cout << "in break visit\n";
 			m_breakVisit = false;
 			break;
 		}
@@ -616,49 +605,36 @@ ValueStruct CWhileStatement::Evaluate(CSTNode* parent) {
 }
 
 ValueStruct CIfStatement::Evaluate(CSTNode* parent) {
-	ValueStruct empty, child1Eval = GetChild(1)->Evaluate(this), child2Eval = GetChild(2)->Evaluate(this);
-	/*if (GetChild(0)->Evaluate(this).int_value) {
-		if (child1Eval.isInt) {
-			child1Eval.int_value;
-		}
-		else {
-			child1Eval.float_value;
-		}
-	}
-	else {
-		if (child2Eval.isInt) {
-			child2Eval.int_value;
-		}
-		else {
-			child2Eval.float_value;
-		}
-	}*/
+	ValueStruct empty;
+	ValueStruct child1Eval = GetChild(0)->Evaluate(this);
+	ValueStruct child2Eval = GetChild(1)->Evaluate(this);
+
 	switch (m_children->size()) {
 		case 2:
-			if (GetChild(0)->Evaluate(this).int_value) {
+			if (child1Eval.int_value) {
 				if (child1Eval.isInt) {
-					child1Eval.int_value;
+					GetChild(1)->Evaluate(this).int_value;
 				}
 				else {
-					child1Eval.float_value;
+					GetChild(1)->Evaluate(this).float_value;
 				}
 			}
 			break;
 		case 3:
-			if (GetChild(0)->Evaluate(this).int_value) {
+			if (child1Eval.int_value) {
 				if (child1Eval.isInt) {
-					child1Eval.int_value;
+					GetChild(1)->Evaluate(this).int_value;
 				}
 				else {
-					child1Eval.float_value;
+					GetChild(1)->Evaluate(this).float_value;
 				}
 			}
 			else {
 				if (child2Eval.isInt) {
-					child2Eval.int_value;
+					GetChild(2)->Evaluate(this).int_value;
 				}
 				else {
-					child2Eval.float_value;
+					GetChild(2)->Evaluate(this).float_value;
 				}
 			}
 			break;
@@ -673,24 +649,8 @@ ValueStruct CBreakStatement::Evaluate(CSTNode* parent) {
 	return empty;
 }
 
-/*void GetArguments(CSTNode* currentnode, list<CExpression*>* arguments) {
-	static int discoveredArg = 0;
-
-	list<CSTNode*>::iterator it;
-	double result = 0;
-
-	if (dynamic_cast<CExpression*>(currentnode) != nullptr) {
-		arguments->push_back((CExpression*)currentnode);
-	}
-
-	for (it = currentnode->m_children->begin(); it != currentnode->m_children->end(); it++) {
-		GetArguments((*it), arguments);
-	}
-}*/
-
 void GetFormalArguments(CSTNode* currentnode, list<CIDENTIFIER*>* arguments) {
 	list<CSTNode*>::iterator it;
-	//double result = 0;
 
 	if (dynamic_cast<CIDENTIFIER*>(currentnode) != nullptr) {
 		arguments->push_back((CIDENTIFIER*)currentnode);
@@ -720,7 +680,6 @@ void CExpressionFCall::MapActualToFormalArguments() {
 
 void GetActualArguments(CSTNode* currentnode, list<CExpression*>* arguments) {
 	list<CSTNode*>::iterator it;
-	//double result = 0;
 
 	if (dynamic_cast<CExpression*>(currentnode) != nullptr) {
 		arguments->push_back((CExpression*)currentnode);
@@ -751,15 +710,34 @@ ValueStruct CReturnStatement::Evaluate(CSTNode* parent) {
 }
 
 ValueStruct CExpressionFCall::Evaluate(CSTNode* parent) {
-	ValueStruct result;
+	ValueStruct result{0,0,false}, aArg0, aArg1;
 	CIDENTIFIER* functionId = (CIDENTIFIER*)GetChild(0);
 	CFunctionDefinition* fundef;
 
 	if (!functionId->m_text.compare("sqrt")) {
-		result.float_value = sqrt(GetActualArgument(0).float_value);
+		aArg0 = GetActualArgument(0);
+		if (aArg.isInt) {
+			result.float_value = sqrt(GetActualArgument(0).int_value);
+		}
+		else {
+			result.float_value = sqrt(GetActualArgument(0).float_value);
+		}
 	}
 	else if (!functionId->m_text.compare("pow")) {
-		result.float_value = pow(GetActualArgument(0).float_value, GetActualArgument(1).float_value);
+		aArg0 = GetActualArgument(0);
+		aArg1 = GetActualArgument(1);
+		if (aArg0.isInt && aArg1.isInt) {
+			result.float_value = pow(GetActualArgument(0).int_value, GetActualArgument(1).int_value);
+		}
+		else if (!(aArg0.isInt) && !(aArg1.isInt)) {
+			result.float_value = pow(GetActualArgument(0).float_value, GetActualArgument(1).float_value);
+		}
+		else if (!(aArg0.isInt) && aArg1.isInt) {
+			result.float_value = pow(GetActualArgument(0).float_value, GetActualArgument(1).int_value);
+		}
+		else if (aArg0.isInt && !(aArg1.isInt)) {
+			result.float_value = pow(GetActualArgument(0).int_value, GetActualArgument(1).float_value);
+		}
 	}
 	else {
 		// 1. Get access to the function definition object
@@ -770,7 +748,7 @@ ValueStruct CExpressionFCall::Evaluate(CSTNode* parent) {
 		fundef->GetChild(2)->Evaluate(this);
 		// Return value
 		result = m_returnedValue;
-		m_breakVisit = false;
+		//m_breakVisit = false;
 	}
 
 	return result;
